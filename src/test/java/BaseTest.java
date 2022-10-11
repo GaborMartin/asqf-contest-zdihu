@@ -8,6 +8,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import pages.ZeissHomePage;
 
 public class BaseTest {
 
@@ -38,6 +39,12 @@ public class BaseTest {
     @Test
     void validateOpeningPageLogo() {
         Assertions.assertEquals(driver.findElement(By.xpath("//div[@class='logo']//a[@title='ZEISS International']")).isDisplayed(), true);
+    }
+
+    @Test
+    void PageObjectTest() {
+        ZeissHomePage zeissHomePage = new ZeissHomePage(driver);
+        Assertions.assertTrue(zeissHomePage.DataPrivacySettingsIsDisplayed());
     }
 
 }
