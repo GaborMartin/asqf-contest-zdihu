@@ -55,7 +55,7 @@ public class Utility {
         caps.setCapability(WebmateCapabilityType.USERNAME, username);
         caps.setCapability(WebmateCapabilityType.PROJECT, project);
         caps.setCapability(WebmateCapabilityType.AUTOMATION_SCREENSHOTS, doScreenshot);
-        caps.setCapability(WebmateCapabilityType.NAME, name);
+        caps.setCapability(WebmateCapabilityType.NAME, name+System.currentTimeMillis());
 
         caps.setCapability("browserName", driverProps.getProperty("browser.name"));
         caps.setCapability("version", driverProps.getProperty("browser.version"));
