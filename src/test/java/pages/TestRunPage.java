@@ -1,11 +1,20 @@
 package pages;
 
+import com.testfabrik.webmate.javasdk.WebmateAPISession;
+import com.testfabrik.webmate.javasdk.browsersession.BrowserSessionId;
+import com.testfabrik.webmate.javasdk.selenium.WebmateSeleniumSession;
+import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import utils.ActionData;
+import utils.DataProvider;
+
+import java.util.List;
 
 public class TestRunPage extends CommonPage {
 
@@ -23,6 +32,22 @@ public class TestRunPage extends CommonPage {
         driver.get(BASE_URL + runId);
 
         return new TestRunPage(driver);
+    }
+
+    public void checkActions(WebmateSeleniumSession webmateSeleniumSession, WebmateAPISession webmateAPISession){
+        DataProvider dataProvider = new DataProvider();
+        BrowserSessionId browserSessionId = webmateSeleniumSession.getBrowserSessionId();
+        List<ActionData> expectedActions = dataProvider.getActionsFromTestRun(browserSessionId, webmateAPISession);
+
+        List<WebElement> actualActions = driver.findElements(By.cssSelector("div.headsection .name"));
+        Assertions.assertEquals(expectedActions.size(), actualActions.size());
+
+        for (int i = 0; i < actualActions.size(); i++) {
+            Assertions.assertEquals(expectedActions.get(i).getName(), actualActions.get(i).getText() );
+
+        }
+
+
     }
 
     public String getTestrunName() {

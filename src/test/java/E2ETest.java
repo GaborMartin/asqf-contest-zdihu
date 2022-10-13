@@ -1,29 +1,24 @@
-package selenium;
-
-import com.testfabrik.webmate.javasdk.testmgmt.TestRunEvaluationStatus;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import com.testfabrik.webmate.javasdk.WebmateCapabilityType;
+import com.testfabrik.webmate.javasdk.browsersession.BrowserSessionId;
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
-import io.github.bonigarcia.wdm.webdriver.WebDriverBrowser;
 import pages.DashboardPage;
 import pages.LoginPage;
 import pages.TestRunPage;
 import pages.TestlabPage;
-import pages.WebmateDocsHomePage;
 
-public class WebMateTest {
+import java.util.List;
+
+public class E2ETest extends BaseTest{
 
     WebDriver driver;
 
     @BeforeEach
-    void setup(){
+    void setupLocalDriver(){
+        if (!continueExecution) throw new RuntimeException("Something went wrong");
         WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
         driver.manage().window().maximize();
@@ -40,14 +35,13 @@ public class WebMateTest {
         TestlabPage testlabPage = dashboardPage.navigateToTestLabPage(driver);
 
         // Navigate to the run result page
-        TestRunPage testRunPage = testlabPage.navigateToTestRunPage(driver);
-        Assertions.assertEquals(testRunPage.getTitle(), TestRunPage.EXPECTED_TITLE);
-
-        System.out.println(testRunPage.getTestrunName());
+        String testRunName = System.getProperty("testRunName");
+        TestRunPage testRunPage = testlabPage.selectTestRun(testRunName);
+        testRunPage.checkActions(webmateSeleniumSession, webmateAPISession);
     }
 
     @AfterEach
-    void teardown() {
+    void teardownLocalDriver() {
         driver.quit();
     }
 }

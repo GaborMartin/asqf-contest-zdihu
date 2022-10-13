@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.Timestamp;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -22,11 +23,7 @@ public class Utility {
     private static WebmateAPISession webmateSession;
     private static Properties webmateProps;
     private static Properties driverProps;
-
-    /*private Utility() {
-        webmateProps = Utility.readProps("webmate.properties");
-        driverProps = Utility.readProps("driver.properties");
-    }*/
+    private static long timestamp = System.currentTimeMillis();
 
     public static Properties readProps(String propsPath) {
         Properties prop = new Properties();
@@ -55,7 +52,8 @@ public class Utility {
         caps.setCapability(WebmateCapabilityType.USERNAME, username);
         caps.setCapability(WebmateCapabilityType.PROJECT, project);
         caps.setCapability(WebmateCapabilityType.AUTOMATION_SCREENSHOTS, doScreenshot);
-        caps.setCapability(WebmateCapabilityType.NAME, name+System.currentTimeMillis());
+        caps.setCapability(WebmateCapabilityType.NAME, name+timestamp);
+        System.setProperty("testRunName", name+timestamp );
 
         caps.setCapability("browserName", driverProps.getProperty("browser.name"));
         caps.setCapability("version", driverProps.getProperty("browser.version"));
@@ -86,7 +84,7 @@ public class Utility {
             e.printStackTrace();
         }
 
-        webmateSession.browserSession.getBrowserSessionForSeleniumSession(driver.getSessionId().toString());
+       // webmateSession.browserSession.getBrowserSessionForSeleniumSession(driver.getSessionId().toString());
 
         return webmateSession;
     }

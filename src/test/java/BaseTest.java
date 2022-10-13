@@ -1,57 +1,47 @@
 import com.testfabrik.webmate.javasdk.WebmateAPISession;
 import com.testfabrik.webmate.javasdk.selenium.WebmateSeleniumSession;
 import com.testfabrik.webmate.javasdk.testmgmt.TestRunEvaluationStatus;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-
 import pages.WebmateDocsHomePage;
 
 public class BaseTest {
 
-    RemoteWebDriver driver;
+    RemoteWebDriver webMateDriver;
     WebmateAPISession webmateAPISession;
     WebmateSeleniumSession webmateSeleniumSession;
+    boolean continueExecution = false;
 
-//    @BeforeAll
-//    static void setupAll() {
-//        WebDriverManager.chromedriver().setup();
-//    }
 
     @BeforeEach
     void setup(){
-
         DesiredCapabilities caps = Utility.configCapabilities();
-        driver = Utility.setupDriver(caps);
+        webMateDriver = Utility.setupDriver(caps);
 
-        webmateAPISession = Utility.setWebmateSession(driver);
-        webmateSeleniumSession = Utility.addSeleniumSession(driver);
+        webmateAPISession = Utility.setWebmateSession(webMateDriver);
+        webmateSeleniumSession = Utility.addSeleniumSession(webMateDriver);
 
-        driver.manage().window().maximize();
-        driver.get(WebmateDocsHomePage.URL);
-    }
+        webMateDriver.manage().window().maximize();
+        webMateDriver.get(WebmateDocsHomePage.URL);
 
-    @AfterEach
-    void teardown() {
-        //driver.quit();
-    }
-
-    @Test
-    void validateOpeningPageTitle() {
         try {
-            WebmateDocsHomePage homePage = new WebmateDocsHomePage(driver);
+            WebmateDocsHomePage homePage = new WebmateDocsHomePage(webMateDriver);
             Assertions.assertEquals(homePage.getTitle(), WebmateDocsHomePage.EXPECTED_TITLE);
             webmateSeleniumSession.finishTestRun(TestRunEvaluationStatus.PASSED, "TestRun completed successfully");
+            continueExecution = true;
         }
         catch(Throwable e) {
             webmateSeleniumSession.finishTestRun(TestRunEvaluationStatus.FAILED, "TestRun has failed");
             e.printStackTrace();
         }
     }
+
+    @AfterEach
+    void teardown() {
+        webMateDriver.quit();
+    }
+
 
 //    @Test
 //    void validateOpeningPageLogo() {
