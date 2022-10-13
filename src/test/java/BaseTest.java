@@ -15,6 +15,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import pages.WebmateDocsHomePage;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -63,7 +64,7 @@ public class BaseTest {
           .getBrowserSessionForSeleniumSession(driver.getSessionId().toString());
 //        driver = new ChromeDriver();
         driver.manage().window().maximize();
-        driver.get("https://www.zeiss.com/");
+        driver.get(WebmateDocsHomePage.URL);
     }
 
     @AfterEach
@@ -74,7 +75,8 @@ public class BaseTest {
     @Test
     void validateOpeningPageTitle() {
         try {
-            Assertions.assertEquals(driver.getTitle(), "ZEISS Group");
+            WebmateDocsHomePage homePage = new WebmateDocsHomePage(driver);
+            Assertions.assertEquals(homePage.getTitle(), WebmateDocsHomePage.EXPECTED_TITLE);
             seleniumSession.finishTestRun(TestRunEvaluationStatus.PASSED, "TestRun completed successfully");
         }
         catch(Throwable e) {
