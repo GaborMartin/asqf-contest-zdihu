@@ -1,34 +1,21 @@
-import com.testfabrik.webmate.javasdk.*;
-import com.testfabrik.webmate.javasdk.browsersession.BrowserSessionId;
-import com.testfabrik.webmate.javasdk.browsersession.BrowserSessionRef;
+import com.testfabrik.webmate.javasdk.WebmateAPISession;
 import com.testfabrik.webmate.javasdk.selenium.WebmateSeleniumSession;
 import com.testfabrik.webmate.javasdk.testmgmt.TestRunEvaluationStatus;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import pages.WebmateDocsHomePage;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.UUID;
+import pages.WebmateDocsHomePage;
 
 public class BaseTest {
 
     RemoteWebDriver driver;
-    private WebmateAPISession webmateSession;
-    private WebmateSeleniumSession seleniumSession;
-    private BrowserSessionRef browserSession;
+    WebmateAPISession webmateAPISession;
+    WebmateSeleniumSession webmateSeleniumSession;
 
 //    @BeforeAll
 //    static void setupAll() {
@@ -36,40 +23,21 @@ public class BaseTest {
 //    }
 
     @BeforeEach
-    void setup() throws MalformedURLException, URISyntaxException {
+    void setup(){
 
-        DesiredCapabilities caps = new DesiredCapabilities();
-        caps.setCapability(WebmateCapabilityType.API_KEY, "49addaed-d902-4dc7-a233-d22d19d2bc6e");
-        caps.setCapability(WebmateCapabilityType.USERNAME, "zoltan.jakab@zeiss.com");
-        caps.setCapability(WebmateCapabilityType.PROJECT, "a7918535-d828-42e4-b2fc-327ff6f82eb6");
-        caps.setCapability(WebmateCapabilityType.AUTOMATION_SCREENSHOTS, true);
-        caps.setCapability(WebmateCapabilityType.NAME, "Late Night Session");
+        DesiredCapabilities caps = Utility.configCapabilities();
+        driver = Utility.setupDriver(caps);
 
+        webmateAPISession = Utility.setWebmateSession(driver);
+        webmateSeleniumSession = Utility.addSeleniumSession(driver);
 
-        caps.setCapability("browserName", "CHROME");
-        caps.setCapability("version", "106");
-        caps.setCapability("platform", "WINDOWS_7_64");
-
-        driver = new RemoteWebDriver(new URL("https://selenium-demo.webmate.io/wd/hub"), caps);
-
-        WebmateAuthInfo authInfo = new WebmateAuthInfo("zoltan.jakab@zeiss.com", "49addaed-d902-4dc7-a233-d22d19d2bc6e");
-        webmateSession = new WebmateAPISession(
-          authInfo,
-          WebmateEnvironment.create(new URI("https://demo.webmate.io/api/v1/")),
-          new ProjectId(UUID.fromString("a7918535-d828-42e4-b2fc-327ff6f82eb6")));
-
-
-        seleniumSession = webmateSession.addSeleniumSession(driver.getSessionId().toString());
-        browserSession = webmateSession.browserSession
-          .getBrowserSessionForSeleniumSession(driver.getSessionId().toString());
-//        driver = new ChromeDriver();
         driver.manage().window().maximize();
         driver.get(WebmateDocsHomePage.URL);
     }
 
     @AfterEach
     void teardown() {
-        driver.quit();
+        //driver.quit();
     }
 
     @Test
@@ -77,10 +45,10 @@ public class BaseTest {
         try {
             WebmateDocsHomePage homePage = new WebmateDocsHomePage(driver);
             Assertions.assertEquals(homePage.getTitle(), WebmateDocsHomePage.EXPECTED_TITLE);
-            seleniumSession.finishTestRun(TestRunEvaluationStatus.PASSED, "TestRun completed successfully");
+            webmateSeleniumSession.finishTestRun(TestRunEvaluationStatus.PASSED, "TestRun completed successfully");
         }
         catch(Throwable e) {
-            seleniumSession.finishTestRun(TestRunEvaluationStatus.FAILED, "TestRun has failed");
+            webmateSeleniumSession.finishTestRun(TestRunEvaluationStatus.FAILED, "TestRun has failed");
             e.printStackTrace();
         }
     }
