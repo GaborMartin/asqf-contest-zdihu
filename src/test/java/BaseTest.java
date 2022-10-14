@@ -1,43 +1,43 @@
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-
-import io.github.bonigarcia.wdm.WebDriverManager;
+import com.testfabrik.webmate.javasdk.WebmateAPISession;
+import com.testfabrik.webmate.javasdk.selenium.WebmateSeleniumSession;
+import com.testfabrik.webmate.javasdk.testmgmt.TestRunEvaluationStatus;
+import org.junit.jupiter.api.*;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import pages.WebmateDocsHomePage;
 
 public class BaseTest {
 
-    WebDriver driver;
-
-    @BeforeAll
-    static void setupAll() {
-        WebDriverManager.chromedriver().setup();
-    }
+    RemoteWebDriver webMateDriver;
+    WebmateAPISession webmateAPISession;
+    WebmateSeleniumSession webmateSeleniumSession;
 
     @BeforeEach
-    void setup() {
-        driver = new ChromeDriver();
-        driver.manage().window().maximize();
-        driver.get("https://www.zeiss.com/");
+    void setup(){
+        DesiredCapabilities caps = Utility.configCapabilities();
+        webMateDriver = Utility.setupDriver(caps);
+
+        webmateAPISession = Utility.setWebmateSession(webMateDriver);
+        webmateSeleniumSession = Utility.addSeleniumSession(webMateDriver);
+
+        webMateDriver.manage().window().maximize();
+        webMateDriver.get(WebmateDocsHomePage.URL);
+
+        try {
+            WebmateDocsHomePage homePage = new WebmateDocsHomePage(webMateDriver);
+            Assertions.assertEquals(homePage.getTitle(), WebmateDocsHomePage.EXPECTED_TITLE);
+            webmateSeleniumSession.finishTestRun(TestRunEvaluationStatus.PASSED, "TestRun completed successfully");
+        }
+        catch(Throwable e) {
+            webmateSeleniumSession.finishTestRun(TestRunEvaluationStatus.FAILED, "TestRun has failed");
+            throw new RuntimeException(e.getLocalizedMessage());
+        }
     }
 
     @AfterEach
     void teardown() {
-        driver.quit();
+        webMateDriver.quit();
     }
 
-    @Test
-    void validateOpeningPageTitle() {
-        Assertions.assertEquals(driver.getTitle(), "ZEISS Group");
-    }
-
-    @Test
-    void validateOpeningPageLogo() {
-        Assertions.assertEquals(driver.findElement(By.xpath("//div[@class='logo']//a[@title='ZEISS International']")).isDisplayed(), true);
-    }
 
 }
