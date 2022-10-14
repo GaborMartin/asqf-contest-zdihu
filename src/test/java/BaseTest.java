@@ -11,8 +11,6 @@ public class BaseTest {
     RemoteWebDriver webMateDriver;
     WebmateAPISession webmateAPISession;
     WebmateSeleniumSession webmateSeleniumSession;
-    boolean continueExecution = false;
-
 
     @BeforeEach
     void setup(){
@@ -29,11 +27,10 @@ public class BaseTest {
             WebmateDocsHomePage homePage = new WebmateDocsHomePage(webMateDriver);
             Assertions.assertEquals(homePage.getTitle(), WebmateDocsHomePage.EXPECTED_TITLE);
             webmateSeleniumSession.finishTestRun(TestRunEvaluationStatus.PASSED, "TestRun completed successfully");
-            continueExecution = true;
         }
         catch(Throwable e) {
             webmateSeleniumSession.finishTestRun(TestRunEvaluationStatus.FAILED, "TestRun has failed");
-            e.printStackTrace();
+            throw new RuntimeException(e.getLocalizedMessage());
         }
     }
 
@@ -42,10 +39,5 @@ public class BaseTest {
         webMateDriver.quit();
     }
 
-
-//    @Test
-//    void validateOpeningPageLogo() {
-//        Assertions.assertEquals(driver.findElement(By.xpath("//div[@class='logo']//a[@title='ZEISS International']")).isDisplayed(), true);
-//    }
 
 }

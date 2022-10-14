@@ -15,6 +15,7 @@ import com.testfabrik.webmate.javasdk.WebmateCapabilityType;
 import com.testfabrik.webmate.javasdk.WebmateEnvironment;
 import com.testfabrik.webmate.javasdk.selenium.WebmateSeleniumSession;
 
+import entities.WebUser;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -23,6 +24,8 @@ public class Utility {
     private static WebmateAPISession webmateSession;
     private static Properties webmateProps;
     private static Properties driverProps;
+
+    private static Properties userProps;
     private static long timestamp = System.currentTimeMillis();
 
     public static Properties readProps(String propsPath) {
@@ -32,7 +35,7 @@ public class Utility {
 
             prop.load(input);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw  new RuntimeException(e.getLocalizedMessage());
         }
         return prop;
     }
@@ -40,6 +43,7 @@ public class Utility {
     public static DesiredCapabilities configCapabilities() {
         webmateProps = Utility.readProps("webmate.properties");
         driverProps = Utility.readProps("driver.properties");
+        userProps = Utility.readProps("user.properties");
 
         String username = webmateProps.getProperty("user.name");
         String apiKey = webmateProps.getProperty("api.key");
@@ -91,5 +95,9 @@ public class Utility {
 
     public static WebmateSeleniumSession addSeleniumSession(RemoteWebDriver driver) {
         return webmateSession.addSeleniumSession(driver.getSessionId().toString());
+    }
+
+    public static WebUser getConfiguredWebUser() {
+        return new WebUser(userProps.getProperty("web.useremail"), userProps.getProperty("web.userpassword"));
     }
 }

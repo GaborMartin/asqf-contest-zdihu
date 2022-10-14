@@ -1,5 +1,3 @@
-import com.testfabrik.webmate.javasdk.WebmateCapabilityType;
-import com.testfabrik.webmate.javasdk.browsersession.BrowserSessionId;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -10,7 +8,6 @@ import pages.LoginPage;
 import pages.TestRunPage;
 import pages.TestlabPage;
 
-import java.util.List;
 
 public class E2ETest extends BaseTest{
 
@@ -18,7 +15,6 @@ public class E2ETest extends BaseTest{
 
     @BeforeEach
     void setupLocalDriver(){
-        if (!continueExecution) throw new RuntimeException("Something went wrong");
         WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
         driver.manage().window().maximize();
@@ -28,11 +24,11 @@ public class E2ETest extends BaseTest{
     void validateTestRunSteps() {
         // Login to the system
         LoginPage loginPage = LoginPage.navigateTo(driver);
-        DashboardPage dashboardPage = loginPage.login("adam.andrasko@zeiss.com", "ZdiHungaryTeam");
+        DashboardPage dashboardPage = loginPage.login(Utility.getConfiguredWebUser());
         Assertions.assertEquals(dashboardPage.getTitle(), TestRunPage.EXPECTED_TITLE);
 
         // Navigate to the Testlab page via menu link
-        TestlabPage testlabPage = dashboardPage.navigateToTestLabPage(driver);
+        TestlabPage testlabPage = dashboardPage.navigateToTestLabPage();
 
         // Navigate to the run result page
         String testRunName = System.getProperty("testRunName");
