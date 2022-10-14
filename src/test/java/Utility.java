@@ -88,8 +88,6 @@ public class Utility {
             e.printStackTrace();
         }
 
-       // webmateSession.browserSession.getBrowserSessionForSeleniumSession(driver.getSessionId().toString());
-
         return webmateSession;
     }
 

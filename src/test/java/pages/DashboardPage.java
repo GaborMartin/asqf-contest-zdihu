@@ -9,6 +9,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 public class DashboardPage extends CommonPage {
 
     @FindBy(xpath = "//a[@data-testing-id='project_dasboard-testlab-link']") private WebElement icon;
+
     public DashboardPage(WebDriver driver) {
         super(driver);
     }

@@ -1,15 +1,14 @@
 package utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Optional;
 import com.testfabrik.webmate.javasdk.WebmateAPISession;
 import com.testfabrik.webmate.javasdk.browsersession.BrowserSessionId;
 import com.testfabrik.webmate.javasdk.testmgmt.Artifact;
 import com.testfabrik.webmate.javasdk.testmgmt.ArtifactInfo;
-import utils.ActionData;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class DataProvider {
 
