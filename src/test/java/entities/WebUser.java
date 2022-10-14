@@ -1,7 +1,7 @@
 package entities;
 
 public class WebUser {
-    private  String email;
+    private String email;
     private String password;
 
     public WebUser(String email, String password) {

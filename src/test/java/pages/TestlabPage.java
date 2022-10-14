@@ -14,8 +14,8 @@ public class TestlabPage extends CommonPage {
 
         WebDriverWait wait = new WebDriverWait(this.driver, 30);
         wait.until(ExpectedConditions.
-          visibilityOfElementLocated(By.xpath("//td[contains(@class, 'report-table-name') and text()='" + testRunName + "']" )))
-          .click();
+                           visibilityOfElementLocated(By.xpath("//td[contains(@class, 'report-table-name') and text()='" + testRunName + "']")))
+                .click();
 
         return new TestRunPage(driver);
     }

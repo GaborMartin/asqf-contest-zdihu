@@ -16,6 +16,7 @@ import com.testfabrik.webmate.javasdk.WebmateEnvironment;
 import com.testfabrik.webmate.javasdk.selenium.WebmateSeleniumSession;
 
 import entities.WebUser;
+
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -35,7 +36,7 @@ public class Utility {
 
             prop.load(input);
         } catch (IOException e) {
-            throw  new RuntimeException(e.getLocalizedMessage());
+            throw new RuntimeException(e.getLocalizedMessage());
         }
         return prop;
     }
@@ -56,8 +57,8 @@ public class Utility {
         caps.setCapability(WebmateCapabilityType.USERNAME, username);
         caps.setCapability(WebmateCapabilityType.PROJECT, project);
         caps.setCapability(WebmateCapabilityType.AUTOMATION_SCREENSHOTS, doScreenshot);
-        caps.setCapability(WebmateCapabilityType.NAME, name+timestamp);
-        System.setProperty("testRunName", name+timestamp );
+        caps.setCapability(WebmateCapabilityType.NAME, name + timestamp);
+        System.setProperty("testRunName", name + timestamp);
 
         caps.setCapability("browserName", driverProps.getProperty("browser.name"));
         caps.setCapability("version", driverProps.getProperty("browser.version"));

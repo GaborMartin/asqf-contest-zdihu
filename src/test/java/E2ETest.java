@@ -8,13 +8,12 @@ import pages.LoginPage;
 import pages.TestRunPage;
 import pages.TestlabPage;
 
-
-public class E2ETest extends BaseTest{
+public class E2ETest extends BaseTest {
 
     WebDriver driver;
 
     @BeforeEach
-    void setupLocalDriver(){
+    void setupLocalDriver() {
         WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
         driver.manage().window().maximize();

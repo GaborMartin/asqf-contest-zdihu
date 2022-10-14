@@ -1,9 +1,11 @@
 import com.testfabrik.webmate.javasdk.WebmateAPISession;
 import com.testfabrik.webmate.javasdk.selenium.WebmateSeleniumSession;
 import com.testfabrik.webmate.javasdk.testmgmt.TestRunEvaluationStatus;
+
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+
 import pages.WebmateDocsHomePage;
 
 public class BaseTest {
@@ -13,7 +15,7 @@ public class BaseTest {
     WebmateSeleniumSession webmateSeleniumSession;
 
     @BeforeEach
-    void setup(){
+    void setup() {
         DesiredCapabilities caps = Utility.configCapabilities();
         webMateDriver = Utility.setupDriver(caps);
 
@@ -27,8 +29,7 @@ public class BaseTest {
             WebmateDocsHomePage homePage = new WebmateDocsHomePage(webMateDriver);
             Assertions.assertEquals(homePage.getTitle(), WebmateDocsHomePage.EXPECTED_TITLE);
             webmateSeleniumSession.finishTestRun(TestRunEvaluationStatus.PASSED, "TestRun completed successfully");
-        }
-        catch(Throwable e) {
+        } catch (Throwable e) {
             webmateSeleniumSession.finishTestRun(TestRunEvaluationStatus.FAILED, "TestRun has failed");
             throw new RuntimeException(e.getLocalizedMessage());
         }
@@ -38,6 +39,5 @@ public class BaseTest {
     void teardown() {
         webMateDriver.quit();
     }
-
 
 }
